@@ -27,8 +27,10 @@ services:
     ports:
       - "5173:5173"
     volumes:
+      # Синхронизируем код, но исключаем node_modules
       - ./frontend:/app
-    command: ["vite", "--host"]
+      - /app/node_modules
+    command: npm run dev -- --host
 
 volumes:
   db_data:

@@ -4,6 +4,7 @@ import os
 import time
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 # Получаем URL базы данных из .env
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+psycopg2://clinic:clinicpass@db:5432/clinic_db")
@@ -26,3 +27,12 @@ else:
 # Создание сессии и метаданных
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
 metadata = MetaData()
+Base = declarative_base()
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
