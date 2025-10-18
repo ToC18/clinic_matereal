@@ -5,6 +5,13 @@ from .database import Base
 from sqlalchemy.sql import func
 import enum
 
+class UnitEnum(enum.Enum):
+    piece = "шт"
+    milliliter = "мл"
+    gram = "г"
+    pack = "уп"
+    ampoule = "амп"
+
 class UserRole(enum.Enum):
     staff = "staff"
     admin = "admin"
@@ -13,10 +20,20 @@ class UserRole(enum.Enum):
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
+    full_name = Column(String, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     role = Column(SQLAlchemyEnum(UserRole), default=UserRole.staff)
+
+class ActivityLog(Base):
+    __tablename__ = "activity_logs"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    action = Column(String, nullable=False)
+    details = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    user = relationship("User")
 
 class Supplier(Base):
     __tablename__ = "suppliers"
@@ -29,7 +46,7 @@ class Material(Base):
     __tablename__ = "materials"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, unique=True, index=True)
-    unit = Column(String, nullable=False)
+    unit = Column(SQLAlchemyEnum(UnitEnum, name="unitenum"), nullable=False)
     min_quantity = Column(Float, default=0.0)
     is_narcotic = Column(Boolean, default=False)
     supplier_id = Column(Integer, ForeignKey("suppliers.id"), nullable=True)
@@ -79,6 +96,6 @@ class PurchaseRequestItem(Base):
     request_id = Column(Integer, ForeignKey("purchase_requests.id"), nullable=False)
     material_name = Column(String, nullable=False)
     quantity = Column(Float, nullable=False)
-    unit = Column(String, nullable=False)
+    unit = Column(SQLAlchemyEnum(UnitEnum, name="unitenum"), nullable=False)
     expiration_date = Column(DateTime, nullable=True)
     request = relationship("PurchaseRequest", back_populates="items")

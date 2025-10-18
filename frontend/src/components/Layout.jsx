@@ -5,6 +5,8 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import PeopleIcon from '@mui/icons-material/People';
 import { AuthContext } from '@/contexts/AuthContext.jsx';
 
 const drawerWidth = 240;
@@ -15,7 +17,9 @@ const Layout = () => {
   const menuItems = [
     { text: 'Дашборд', icon: <DashboardIcon />, path: '/', roles: ['admin', 'staff', 'head_nurse'] },
     { text: 'Материалы', icon: <InventoryIcon />, path: '/materials', roles: ['admin', 'staff', 'head_nurse'] },
+    { text: 'Сотрудники', icon: <PeopleIcon />, path: '/users', roles: ['admin', 'head_nurse'] },
     { text: 'Заявки', icon: <PlaylistAddIcon />, path: '/requests', roles: ['admin', 'head_nurse'] },
+    { text: 'Журнал НС', icon: <VpnKeyIcon />, path: '/narcotic-journal', roles: ['admin', 'head_nurse'] },
     { text: 'Отчеты', icon: <BarChartIcon />, path: '/reports', roles: ['admin', 'head_nurse'] },
   ];
 
@@ -26,7 +30,9 @@ const Layout = () => {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Учёт материалов
           </Typography>
-          <Typography sx={{ mr: 2 }}>{user?.email}</Typography>
+          <Button color="inherit" component={RouterLink} to="/profile">
+            {user?.full_name || user?.email}
+          </Button>
           <Button color="inherit" onClick={logout}>Выйти</Button>
         </Toolbar>
       </AppBar>
@@ -42,7 +48,7 @@ const Layout = () => {
         <Box sx={{ overflow: 'auto' }}>
           <List>
             {menuItems.map((item) =>
-              (item.roles.includes(user.role)) && (
+              (user && item.roles.includes(user.role)) && (
                 <ListItem key={item.text} disablePadding>
                   <ListItemButton component={RouterLink} to={item.path}>
                     <ListItemIcon>{item.icon}</ListItemIcon>

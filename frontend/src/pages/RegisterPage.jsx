@@ -1,17 +1,16 @@
-import React, { useState } from 'react'; // <--- ИСПРАВЛЕНО
+import React, { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import {
   TextField, Button, Container, Typography, Box, FormControl,
   InputLabel, Select, MenuItem, Grid
 } from '@mui/material';
 import api from '@/services/api.js';
-// ...
 
-// ... (остальной код файла остается без изменений)
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('staff');
+  const [fullName, setFullName] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -19,7 +18,12 @@ const RegisterPage = () => {
     event.preventDefault();
     setError('');
     try {
-      await api.post('/users/', { email, password, role });
+      await api.post('/users/', {
+        email,
+        password,
+        role,
+        full_name: fullName,
+      });
       alert('Регистрация прошла успешно! Теперь вы можете войти.');
       navigate('/login');
     } catch (err) {
@@ -33,6 +37,9 @@ const RegisterPage = () => {
         <Typography component="h1" variant="h5">Регистрация нового пользователя</Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField required fullWidth id="fullName" label="ФИО" name="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+            </Grid>
             <Grid item xs={12}>
               <TextField required fullWidth id="email" label="Email-адрес" name="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </Grid>

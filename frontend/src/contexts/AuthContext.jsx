@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '@/services/api.js';
-// ...
 
 export const AuthContext = createContext();
 
@@ -11,19 +10,18 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem('token');
     if (token) {
+      api.defaults.headers.Authorization = `Bearer ${token}`;
       api.get('/users/me/')
         .then(response => {
           setUser(response.data);
         })
         .catch(() => {
-          localStorage.removeItem('accessToken');
+          localStorage.removeItem('token');
           setUser(null);
         })
-        .finally(() => {
-          setLoading(false);
-        });
+        .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
@@ -34,23 +32,24 @@ export const AuthProvider = ({ children }) => {
       username: email,
       password: password
     }));
-    localStorage.setItem('accessToken', response.data.access_token);
-    api.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
+    const { access_token } = response.data;
+    localStorage.setItem('token', access_token);
+    api.defaults.headers.Authorization = `Bearer ${access_token}`;
     const userResponse = await api.get('/users/me/');
     setUser(userResponse.data);
     navigate('/');
   };
 
   const logout = () => {
-    localStorage.removeItem('accessToken');
-    delete api.defaults.headers.common['Authorization'];
+    localStorage.removeItem('token');
+    delete api.defaults.headers.Authorization;
     setUser(null);
     navigate('/login');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
-      {!loading && children}
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout, loading }}>
+      {children}
     </AuthContext.Provider>
   );
 };
