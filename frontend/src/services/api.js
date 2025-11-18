@@ -7,7 +7,8 @@ const api = axios.create({
 // Перехватчик запросов для добавления токена
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
+    // ИСПРАВЛЕНО: используем ключ 'token' вместо 'accessToken'
+    const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

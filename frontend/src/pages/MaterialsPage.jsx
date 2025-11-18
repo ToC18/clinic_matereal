@@ -78,7 +78,8 @@ const MaterialFormModal = ({ open, onClose, onSave, material }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    const isNumeric = ['min_quantity', 'initial_quantity'].includes(name);
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : (isNumeric ? parseFloat(value) : value) }));
   };
 
   const handleSubmit = () => {

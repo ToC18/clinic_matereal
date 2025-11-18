@@ -75,7 +75,7 @@ const RequestPage = () => {
         <Typography variant="h6">Новая заявка</Typography>
         <Grid container spacing={2} alignItems="center" sx={{ my: 1 }}>
           <Grid item xs={12} sm={3}><TextField fullWidth size="small" label="Название" value={newItem.material_name} onChange={e => setNewItem({...newItem, material_name: e.target.value})} /></Grid>
-          <Grid item xs={6} sm={2}><TextField fullWidth size="small" type="number" label="Количество" value={newItem.quantity} onChange={e => setNewItem({...newItem, quantity: e.target.value})} /></Grid>
+          <Grid item xs={6} sm={2}><TextField fullWidth size="small" type="number" label="Количество" value={newItem.quantity} onChange={e => setNewItem({...newItem, quantity: parseFloat(e.target.value) || ''})} /></Grid>
           <Grid item xs={6} sm={2}>
              <FormControl fullWidth size="small">
                 <InputLabel id="unit-select-label-req">Ед. изм.</InputLabel>

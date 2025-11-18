@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
       password: password
     }));
     const { access_token } = response.data;
+    // Убедитесь, что здесь используется тот же ключ, что и в api.js
     localStorage.setItem('token', access_token);
     api.defaults.headers.Authorization = `Bearer ${access_token}`;
     const userResponse = await api.get('/users/me/');

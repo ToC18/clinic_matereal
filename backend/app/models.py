@@ -6,11 +6,11 @@ from sqlalchemy.sql import func
 import enum
 
 class UnitEnum(enum.Enum):
-    piece = "шт"
-    milliliter = "мл"
-    gram = "г"
-    pack = "уп"
-    ampoule = "амп"
+    piece = "piece"
+    milliliter = "milliliter"
+    gram = "gram"
+    pack = "pack"
+    ampoule = "ampoule"
 
 class UserRole(enum.Enum):
     staff = "staff"
